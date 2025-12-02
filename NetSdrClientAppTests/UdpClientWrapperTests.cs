@@ -9,6 +9,14 @@ namespace NetSdrClientAppTests.Networking
     [TestFixture]
     public class UdpClientWrapperTests
     {
+			  [Test]
+				public void StopListening_WhenNotStarted_DoesNotThrow()
+				{
+					var wrapper = new UdpClientWrapper(5555);
+
+					Assert.DoesNotThrow(() => wrapper.StopListening());
+				}
+
         [Test]
         public void Exit_WhenNotStarted_DoesNotThrow()
         {

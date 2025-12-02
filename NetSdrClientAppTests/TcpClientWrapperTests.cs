@@ -10,6 +10,32 @@ namespace NetSdrClientAppTests.Networking
     [TestFixture]
     public class TcpClientWrapperTests
     {
+
+				[Test]
+				public void Connect_WhenAlreadyConnected_DoesNotThrow_AndStaysConnected()
+				{
+					// arrange
+					var listener = new TcpListener(IPAddress.Loopback, 0);
+					listener.Start();
+					var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+					var wrapper = new TcpClientWrapper("127.0.0.1", port);
+
+					// перше підключення – як у попередньому тесті
+					wrapper.Connect();
+					Assert.IsTrue(wrapper.Connected, "Перше підключення не пройшло.");
+
+					// act + assert: другий виклик Connect() повинен піти в гілку
+					// `if (Connected) { Console.WriteLine("Already connected..."); return; }`
+					Assert.DoesNotThrow(() => wrapper.Connect(), "Повторний Connect не повинен кидати виняток.");
+					Assert.IsTrue(wrapper.Connected, "Після повторного Connect з’єднання має залишатися активним.");
+
+					// cleanup
+					wrapper.Disconnect();
+					listener.Stop();
+				}
+
+
         [Test]
         public void Disconnect_WhenNotConnected_DoesNotThrow()
         {
