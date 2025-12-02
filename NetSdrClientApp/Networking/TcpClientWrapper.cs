@@ -70,26 +70,25 @@ namespace NetSdrClientApp.Networking
                 Console.WriteLine("No active connection to disconnect.");
             }
         }
-
-        public async Task SendMessageAsync(byte[] data)
+        public Task SendMessageAsync(byte[] data)
         {
-            if (Connected && _stream != null && _stream.CanWrite)
-            {
-                Console.WriteLine($"Message sent: " + data.Select(b => Convert.ToString(b, toBase: 16)).Aggregate((l, r) => $"{l} {r}"));
-                await _stream.WriteAsync(data, 0, data.Length);
-            }
-            else
-            {
-                throw new InvalidOperationException("Not connected to a server.");
-            }
+            return SendMessageInternalAsync(data);
         }
 
-        public async Task SendMessageAsync(string str)
+        public Task SendMessageAsync(string str)
         {
             var data = Encoding.UTF8.GetBytes(str);
+            return SendMessageInternalAsync(data);
+        }
+
+        private async Task SendMessageInternalAsync(byte[] data)
+        {
             if (Connected && _stream != null && _stream.CanWrite)
             {
-                Console.WriteLine($"Message sent: " + data.Select(b => Convert.ToString(b, toBase: 16)).Aggregate((l, r) => $"{l} {r}"));
+                Console.WriteLine("Message sent: " +
+                                  data.Select(b => Convert.ToString(b, toBase: 16))
+                                      .Aggregate((l, r) => $"{l} {r}"));
+
                 await _stream.WriteAsync(data, 0, data.Length);
             }
             else
