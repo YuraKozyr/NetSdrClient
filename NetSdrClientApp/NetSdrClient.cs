@@ -116,7 +116,12 @@ namespace NetSdrClientApp
 
         private static void _udpClient_MessageReceived(object? sender, byte[] e)
         {
-            NetSdrMessageHelper.TranslateMessage(e, out MsgTypes type, out ControlItemCodes code, out ushort sequenceNum, out byte[] body);
+					  NetSdrMessageHelper.TranslateMessage(
+    				e,
+    				out _,          // MsgTypes type не потрібен
+    				out _,          // ControlItemCodes code не потрібен
+    				out _,          // ushort sequenceNum не потрібен
+    				out var body);  // тільки body використовуємо
             var samples = NetSdrMessageHelper.GetSamples(16, body);
 
             Console.WriteLine($"Samples recieved: " + body.Select(b => Convert.ToString(b, toBase: 16)).Aggregate((l, r) => $"{l} {r}"));
