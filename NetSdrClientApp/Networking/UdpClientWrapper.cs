@@ -45,29 +45,38 @@ public class UdpClientWrapper : IUdpClient
         }
     }
 		
-		    private void StopInternal()
+    public void StopListening()
+    {
+        StopInternal("StopListening");
+    }
+
+    public void Exit()
+    {
+        StopInternal("Exit");
+    }
+
+    private void StopInternal(string reason)
     {
         try
         {
+            if (_cts == null && _udpClient == null)
+            {
+                Console.WriteLine($"UDP listener already stopped ({reason}).");
+                return;
+            }
+
             _cts?.Cancel();
             _udpClient?.Close();
+
+            _cts = null;
+            _udpClient = null;
+
             Console.WriteLine("Stopped listening for UDP messages.");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error while stopping: {ex.Message}");
         }
-    }
-
-
-		public void StopListening()
-    {
-        StopInternal();
-    }
-
-    public void Exit()
-    {
-        StopInternal();
     }
 
 
