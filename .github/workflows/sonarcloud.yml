@@ -76,6 +76,7 @@ jobs:
             /p:CollectCoverage=true `
             /p:CoverletOutput=TestResults/coverage.xml `
             /p:CoverletOutputFormat=opencover
+          dotnet test NetSdrClientApp.ArchTests/NetSdrClientApp.ArchTests.csproj -c Release --no-build
         shell: pwsh
       # 3) END: SonarScanner
       - name: SonarScanner End
